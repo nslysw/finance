@@ -1,0 +1,28 @@
+{
+  "accounts": [
+    {"customer_name": "张明", "account_no": "AC202608270001", "card_no": "6222020000001234", "balance": 128560.42, "available_balance": 125000.42, "frozen_amount": 3560.0, "status": "正常"}
+  ],
+  "transactions": [
+    {"transaction_no": "TX202608260001", "card_no": "6222020000001234", "time": "2026-08-26 10:32", "type": "消费", "amount": -128.5, "counterparty": "星河超市"},
+    {"transaction_no": "TX202608260002", "card_no": "6222020000001234", "time": "2026-08-26 15:08", "type": "转账", "amount": -500.0, "counterparty": "李华"}
+  ],
+  "wealth_products": [
+    {"summary": "稳盈 90 天理财：R2 中低风险，1 元起购，业绩比较基准 2.35%-2.75%"},
+    {"summary": "安享固收 180 天：R2 中低风险，1000 元起购，业绩比较基准 2.60%-3.05%"}
+  ],
+  "fund_products": [
+    {"summary": "中证红利指数基金：股票指数型，净值 1.2380，R3 中风险，适合长期定投"},
+    {"summary": "安心债券基金：中短债型，净值 1.0560，R2 中低风险，适合稳健配置"}
+  ],
+  "credit_cards": [
+    {"summary": "金卡：最高 5 万元额度，首年免年费，适合日常消费"},
+    {"summary": "白金卡：最高 20 万元额度，年费 800 元，含机场贵宾和延误保障权益"}
+  ],
+  "loan_products": [
+    {"summary": "惠民消费贷：年化利率 3.6% 起，最高 30 万元，最长 36 期，等额本息还款"},
+    {"summary": "小微经营贷：年化利率 4.2% 起，最高 100 万元，最长 60 期，支持提前还款"}
+  ],
+  "loans": [
+    {"loan_no": "LN202608270001", "status": "还款中", "remaining_principal": 85600.00, "next_repayment_date": "2026-09-15", "next_repayment_amount": 3218.50}
+  ]
+}

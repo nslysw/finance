@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>金融智能客服</title>
+  <style>
+    :root { color: #17212b; background: #f4f7f8; font-family: "Microsoft YaHei", system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 1100px; min-height: 100vh; margin: auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 20px; padding: 20px; }
+    aside, section { background: #fff; border: 1px solid #d8e0e3; border-radius: 8px; }
+    aside { padding: 20px; }
+    h1 { margin: 0 0 6px; font-size: 21px; color: #0b5c55; }
+    h2 { font-size: 14px; margin: 24px 0 10px; color: #52616b; }
+    p { color: #61717d; font-size: 13px; line-height: 1.6; }
+    .chips { display: grid; gap: 8px; }
+    button { font: inherit; cursor: pointer; border: 1px solid #9bc7bf; border-radius: 5px; background: #fff; color: #0b5c55; padding: 9px; text-align: left; }
+    button:hover { background: #edf8f5; }
+    section { display: grid; grid-template-rows: auto 1fr auto; min-height: calc(100vh - 40px); }
+    header { padding: 17px 20px; border-bottom: 1px solid #e2e8ea; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+    #state { color: #52616b; font-size: 12px; }
+    #messages { padding: 20px; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
+    .message { max-width: 78%; padding: 11px 13px; border-radius: 7px; line-height: 1.55; font-size: 14px; white-space: pre-wrap; }
+    .assistant { align-self: flex-start; background: #edf3f5; }
+    .user { align-self: flex-end; background: #0b746a; color: #fff; }
+    form { border-top: 1px solid #e2e8ea; padding: 14px; display: flex; gap: 10px; }
+    input { flex: 1; min-width: 0; border: 1px solid #bdcbd0; border-radius: 5px; padding: 11px; font: inherit; }
+    form button { background: #0b746a; color: #fff; border-color: #0b746a; text-align: center; min-width: 66px; }
+    @media (max-width: 720px) { main { display: block; padding: 0; } aside { border-radius: 0; border-width: 0 0 1px; } section { min-height: 70vh; border-radius: 0; border-width: 0; } .message { max-width: 88%; } }
+  </style>
+</head>
+<body>
+  <main>
+    <aside>
+      <h1>金融智能客服</h1>
+      <p>演示用户：demo-user<br>样例银行卡：6222020000001234</p>
+      <h2>快捷演示</h2>
+      <div class="chips">
+        <button data-text="帮我查一下账户余额">账户余额查询</button>
+        <button data-text="查询昨天的消费记录">交易流水查询</button>
+        <button data-text="我要申请消费贷款">贷款申请</button>
+        <button data-text="我的信用卡丢了">信用卡挂失</button>
+        <button data-text="我的转账一直没有到账，我要投诉">投诉工单</button>
+        <button data-text="有没有适合稳健投资的理财产品">理财咨询</button>
+        <button data-text="推荐一只适合定投的基金">基金咨询</button>
+      </div>
+    </aside>
+    <section>
+      <header><strong>会话演示</strong><span id="state">正在恢复会话...</span></header>
+      <div id="messages"></div>
+      <form id="form"><input id="input" autocomplete="off" placeholder="输入您的金融业务问题" autofocus><button>发送</button></form>
+    </section>
+  </main>
+  <script>
+    const senderId = new URLSearchParams(location.search).get('sender_id') || 'demo-user';
+    const messages = document.querySelector('#messages');
+    const input = document.querySelector('#input');
+    const state = document.querySelector('#state');
+    function show(role, text) { const el = document.createElement('div'); el.className = `message ${role}`; el.textContent = text; messages.append(el); messages.scrollTop = messages.scrollHeight; }
+    async function refresh() { const [history, session] = await Promise.all([fetch(`/api/chat/history?sender_id=${senderId}`).then(r => r.json()), fetch(`/api/session/${senderId}`).then(r => r.json())]); messages.innerHTML = ''; history.messages.forEach(item => show(item.role, item.text)); if (!history.messages.length) show('assistant', '您好，我是金融智能客服。请选择快捷演示，或直接输入问题。'); state.textContent = session.active_task ? `进行中：${session.active_task}，已收集 ${Object.keys(session.slots).length} 项信息` : '当前没有进行中的业务'; }
+    async function send(text) { if (!text.trim()) return; show('user', text); input.value = ''; input.focus(); const response = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({sender_id: senderId, text}) }); const data = await response.json(); if (!response.ok) { show('assistant', data.detail || '服务暂时不可用'); return; } show('assistant', data.messages[0].text); state.textContent = data.active_task ? `识别意图：${data.intent}；进行中：${data.active_task}` : `识别意图：${data.intent}；流程已完成或无需办理`; }
+    document.querySelector('#form').addEventListener('submit', event => { event.preventDefault(); send(input.value); });
+    document.querySelectorAll('[data-text]').forEach(button => button.addEventListener('click', () => send(button.dataset.text)));
+    refresh();
+  </script>
+</body>
+</html>
