@@ -9,7 +9,9 @@ cd E:\AICoding\finance\customer-service-backend
 uv run --project .. python finance_demo.py
 ```
 
-打开 `http://127.0.0.1:18083`。服务启动后会在 `customer-service-backend/finance_demo.db` 自动创建 SQLite 数据库；它保存聊天记录、当前流程槽位及贷款申请/挂失/投诉事件，重启后可恢复。
+打开 `http://192.168.200.128:18083`。服务启动后会在 `customer-service-backend/finance_demo.db` 自动创建 SQLite 数据库；它保存聊天记录、当前流程槽位及贷款申请/挂失/投诉事件，重启后可恢复。
+
+服务默认监听 `0.0.0.0:18083`，可通过虚拟机 IP 对外提供页面。部署到虚拟机、放行防火墙端口和验证网络连接的完整命令见 [虚拟机部署说明](项目交付物/虚拟机部署说明.md)。
 
 ## 演示范围
 

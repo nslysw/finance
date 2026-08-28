@@ -322,4 +322,5 @@ def demo_data() -> dict[str, Any]:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("finance_demo:app", host="127.0.0.1", port=18083, reload=True)
+    # Listen on all interfaces so the VM/LAN address can serve the demo page.
+    uvicorn.run("finance_demo:app", host="0.0.0.0", port=18083, reload=True)
